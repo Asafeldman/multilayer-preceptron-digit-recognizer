@@ -8,7 +8,10 @@ MlpNetwork::MlpNetwork (const Matrix weights[], const Matrix biases[]) :
 
 digit MlpNetwork::operator() (const Matrix &input) const
 {
-  Matrix r4 = _out (_h2 (_h1 (_in (input))));
+  Matrix r1 = _in (input);
+  Matrix r2 = _h1 (r1);
+  Matrix r3 = _h2 (r2);
+  Matrix r4 = _out (r3);
   int index = r4.argmax ();
   return digit{static_cast<unsigned int>(index), r4[index]};
 }
