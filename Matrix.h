@@ -43,7 +43,7 @@ class Matrix
   float &operator[] (int i);
   float operator[] (int i) const;
   friend std::ostream &operator<< (std::ostream &os, const Matrix &rhs);
-  friend std::istream &operator>> (std::istream &is, const Matrix &rhs);
+  friend std::istream &operator>> (std::istream &is, Matrix &rhs);
 
  private:
   int _rows, _cols;

@@ -257,34 +257,52 @@ float Matrix::operator[] (int i) const
 
 std::ostream &operator<< (std::ostream &os, const Matrix &rhs)
 {
+  if (!os)
+  {
+    throw std::runtime_error (RUNTIME_ERR);
+  }
   for (int i = 0; i < rhs._rows; ++i)
   {
     for (int j = 0; j < rhs._cols; ++j)
     {
       if (rhs (i, j) > MIN_VAL)
-      { std::cout << "**"; }
+      { os << "**"; }
       else
-      { std::cout << "  "; }
+      { os << "  "; }
     }
-    std::cout << std::endl;
+    os << std::endl;
   }
   return os;
 }
-std::istream &operator>> (std::istream &is, const Matrix &rhs)
+
+std::istream &operator>> (std::istream &is, Matrix &rhs)
 {
-  for (int i = 0; i < rhs._rows; ++i)
+
+  if (!is)
   {
-    for (int j = 0; j < rhs._cols; ++j)
-    {
-      if (!is.good ())
-      {
-        throw std::runtime_error (RUNTIME_ERR);
-      }
-    }
-    std::cout << std::endl;
+    throw std::runtime_error (RUNTIME_ERR);
   }
+
+  is.seekg (0, std::istream::end);
+  long file_size = is.tellg ();
+  is.seekg (0, std::istream::beg);
+
+  if (file_size < static_cast<long>(sizeof (float)) * rhs._rows * rhs._cols)
+  {
+    throw std::length_error (RUNTIME_ERR);
+  }
+  char *buffer = new char[file_size];
+  is.read (buffer, file_size);
+
+  auto *values = (float *) buffer;
+  for (int i = 0; i < rhs._rows * rhs._cols; i++)
+  {
+    rhs[i] = values[i];
+  }
+  delete[] buffer;
   return is;
 }
+
 
 
 
