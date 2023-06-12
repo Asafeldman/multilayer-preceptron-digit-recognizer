@@ -126,7 +126,6 @@ Matrix &Matrix::transpose ()
       (*this) (i, j) = transposed (i, j);
     }
   }
-  delete[] transposed._matrix;
   return *this;
 }
 
