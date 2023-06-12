@@ -1,4 +1,5 @@
 #include "Activation.h"
+#include "cmath"
 
 Matrix activation::relu (const Matrix &mat)
 {

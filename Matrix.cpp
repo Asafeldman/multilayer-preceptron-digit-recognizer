@@ -2,6 +2,12 @@
 #include "stdexcept"
 #include "iostream"
 #include "cmath"
+#include "cstring"
+#define DEF_ROWS 1
+#define DEF_COLS 1
+#define DEF_DIM 1
+#define DEF_VAL 0
+#define MIN_VAL 0.1
 
 Matrix::Matrix (int rows, int cols)
 {
@@ -14,12 +20,14 @@ Matrix::Matrix (int rows, int cols)
   {
     for (int j = 0; j < _cols; ++j)
     {
-      (*this) (i, j) = 0;
+      (*this) (i, j) = DEF_VAL;
     }
   }
 }
 
-Matrix::Matrix () : _rows (1), _cols (1), _matrix (new float[1]{0.0f})
+Matrix::Matrix () : _rows (DEF_ROWS), _cols (DEF_COLS), _matrix (new
+                                                                     float[DEF_DIM]{
+        DEF_VAL})
 {}
 
 Matrix::Matrix (const Matrix &mat)
@@ -255,7 +263,7 @@ std::ostream &operator<< (std::ostream &os, const Matrix &rhs)
   {
     for (int j = 0; j < rhs._cols; ++j)
     {
-      if (rhs (i, j) > 0.1)
+      if (rhs (i, j) > MIN_VAL)
       { std::cout << "**"; }
       else
       { std::cout << "  "; }
