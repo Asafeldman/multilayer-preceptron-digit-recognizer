@@ -3,7 +3,7 @@
 #define MATRIX_H
 #define INVALID_DIM_ERR "Error: Invalid matrix dimensions."
 #define RANGE_ERR "Error: Index out of range."
-#define RUNTIME_ERR "Error: Invalid input."
+#define STREAM_ERR "Error: A runtime error occurred."
 #include "ostream"
 
 /**
@@ -51,13 +51,15 @@ class Matrix
    * Returns the number of rows in the matrix.
    * @return The number of rows.
    */
-  int get_rows () const { return _rows; }
+  int get_rows () const
+  { return _rows; }
 
   /**
    * Returns the number of columns in the matrix.
    * @return The number of columns.
    */
-  int get_cols () const { return _cols; }
+  int get_cols () const
+  { return _cols; }
 
   /**
    * Returns the Frobenius norm of the current Matrix object.
@@ -103,12 +105,12 @@ class Matrix
    */
   Matrix dot (const Matrix &mat) const;
 
-    /**
-   * Overloaded addition operator for adding two matrices.
-   * @param lhs The left-hand side matrix.
-   * @param rhs The right-hand side matrix.
-   * @return The sum of the two matrices.
-   */
+  /**
+ * Overloaded addition operator for adding two matrices.
+ * @param lhs The left-hand side matrix.
+ * @param rhs The right-hand side matrix.
+ * @return The sum of the two matrices.
+ */
   friend Matrix operator+ (const Matrix &lhs, const Matrix &rhs);
 
   /**

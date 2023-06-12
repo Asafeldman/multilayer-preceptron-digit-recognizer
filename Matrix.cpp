@@ -259,7 +259,7 @@ std::ostream &operator<< (std::ostream &os, const Matrix &rhs)
 {
   if (!os)
   {
-    throw std::runtime_error (RUNTIME_ERR);
+    throw std::runtime_error (STREAM_ERR);
   }
   for (int i = 0; i < rhs._rows; ++i)
   {
@@ -280,14 +280,14 @@ std::istream &operator>> (std::istream &is, Matrix &rhs)
 
   if (!is)
   {
-    throw std::runtime_error (RUNTIME_ERR);
+    throw std::runtime_error (STREAM_ERR);
   }
   is.seekg (0, std::istream::end);
   long file_size = is.tellg ();
   is.seekg (0, std::istream::beg);
   if (file_size < static_cast<long>(sizeof (float)) * rhs._rows * rhs._cols)
   {
-    throw std::length_error (RUNTIME_ERR);
+    throw std::length_error (STREAM_ERR);
   }
   char *buffer = new char[file_size];
   is.read (buffer, file_size);
