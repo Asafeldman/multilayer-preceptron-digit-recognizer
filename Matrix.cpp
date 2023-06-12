@@ -282,11 +282,9 @@ std::istream &operator>> (std::istream &is, Matrix &rhs)
   {
     throw std::runtime_error (RUNTIME_ERR);
   }
-
   is.seekg (0, std::istream::end);
   long file_size = is.tellg ();
   is.seekg (0, std::istream::beg);
-
   if (file_size < static_cast<long>(sizeof (float)) * rhs._rows * rhs._cols)
   {
     throw std::length_error (RUNTIME_ERR);
@@ -302,21 +300,3 @@ std::istream &operator>> (std::istream &is, Matrix &rhs)
   delete[] buffer;
   return is;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
