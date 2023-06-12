@@ -113,7 +113,7 @@ Matrix &Matrix::transpose ()
   {
     for (int j = 0; j < _cols; ++j)
     {
-      transposed (i, j) = (*this) (j, i);
+      transposed (j, i) = (*this) (i, j);
     }
   }
   delete[] _matrix;
