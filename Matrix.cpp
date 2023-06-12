@@ -25,9 +25,8 @@ Matrix::Matrix (int rows, int cols)
   }
 }
 
-Matrix::Matrix () : _rows (DEF_ROWS), _cols (DEF_COLS), _matrix (new
-                                                                     float[DEF_DIM]{
-        DEF_VAL})
+Matrix::Matrix () : _rows (DEF_ROWS), _cols (DEF_COLS),
+                    _matrix (new float[DEF_DIM]{DEF_VAL})
 {}
 
 Matrix::Matrix (const Matrix &mat)
