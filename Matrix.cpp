@@ -273,10 +273,7 @@ std::ostream &operator<< (std::ostream &os, const Matrix &rhs)
   {
     for (int j = 0; j < rhs._cols; ++j)
     {
-      if (rhs (i, j) > MIN_VAL)
-      { os << "**"; }
-      else
-      { os << "  "; }
+      os << (rhs (i, j) > MIN_VAL ? "**" : "  ");
     }
     os << std::endl;
   }
@@ -285,26 +282,15 @@ std::ostream &operator<< (std::ostream &os, const Matrix &rhs)
 
 std::istream &operator>> (std::istream &is, Matrix &rhs)
 {
-
-  if (!is)
+  for (int i = 0; i < rhs._rows; ++i)
   {
-    throw std::runtime_error (STREAM_ERR);
+    for (int j = 0; j < rhs._cols; ++j)
+    {
+      if (!is.read (reinterpret_cast<char *>(&rhs (i, j)), sizeof (float)))
+      {
+        throw std::runtime_error (STREAM_ERR);
+      }
+    }
   }
-  is.seekg (0, std::istream::end);
-  long file_size = is.tellg ();
-  is.seekg (0, std::istream::beg);
-  if (file_size < static_cast<long>(sizeof (float)) * rhs._rows * rhs._cols)
-  {
-    throw std::length_error (STREAM_ERR);
-  }
-  char *buffer = new char[file_size];
-  is.read (buffer, file_size);
-
-  auto *values = (float *) buffer;
-  for (int i = 0; i < rhs._rows * rhs._cols; i++)
-  {
-    rhs[i] = values[i];
-  }
-  delete[] buffer;
   return is;
 }
