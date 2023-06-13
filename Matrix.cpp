@@ -229,7 +229,7 @@ Matrix operator* (const float c, Matrix &rhs)
 
 float &Matrix::operator() (int i, int j)
 {
-  if (i >= _rows || i <= 0 || j >= _cols || j <= 0)
+  if (i >= _rows || i < 0 || j >= _cols || j < 0)
   {
     throw std::length_error (RANGE_ERR);
   }
@@ -238,7 +238,7 @@ float &Matrix::operator() (int i, int j)
 
 float Matrix::operator() (int i, int j) const
 {
-  if (i >= _rows || i <= 0 || j >= _cols || j <= 0)
+  if (i >= _rows || i < 0 || j >= _cols || j < 0)
   {
     throw std::length_error (RANGE_ERR);
   }
@@ -247,7 +247,7 @@ float Matrix::operator() (int i, int j) const
 
 float &Matrix::operator[] (const int i)
 {
-  if (i >= _rows * _cols || i <= 0)
+  if (i >= _rows * _cols || i < 0)
   {
     throw std::length_error (RANGE_ERR);
   }
@@ -256,7 +256,7 @@ float &Matrix::operator[] (const int i)
 
 float Matrix::operator[] (int i) const
 {
-  if (i >= _rows * _cols || i <= 0)
+  if (i >= _rows * _cols || i < 0)
   {
     throw std::length_error (RANGE_ERR);
   }
