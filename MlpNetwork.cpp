@@ -8,7 +8,7 @@ MlpNetwork::MlpNetwork (const Matrix weights[], const Matrix biases[]) :
 
 digit MlpNetwork::operator() (Matrix &input) const
 {
-  input.vectorize();
+  input.vectorize ();
   Matrix r1 = _in (input);
   Matrix r2 = _h1 (r1);
   Matrix r3 = _h2 (r2);

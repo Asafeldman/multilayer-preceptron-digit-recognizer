@@ -15,27 +15,27 @@ Matrix::Matrix (int rows, int cols)
   {
     throw std::length_error (INVALID_DIM_ERR);
   }
-  _rows = rows, _cols = cols, _matrix = new float[rows * cols];
-  for (int i = 0; i < _rows; ++i)
+  _dims.rows = rows, _dims.cols = cols, _matrix = new float[rows * cols];
+  for (int i = 0; i < _dims.rows; ++i)
   {
-    for (int j = 0; j < _cols; ++j)
+    for (int j = 0; j < _dims.cols; ++j)
     {
       (*this) (i, j) = DEF_VAL;
     }
   }
 }
 
-Matrix::Matrix () : _rows (DEF_ROWS), _cols (DEF_COLS),
+Matrix::Matrix () : _dims ({DEF_ROWS, DEF_COLS}),
                     _matrix (new float[DEF_DIM]{DEF_VAL})
 {}
 
 Matrix::Matrix (const Matrix &mat)
 {
-  _rows = mat._rows, _cols = mat._cols;
-  _matrix = new float[_rows * _cols];
-  for (int i = 0; i < _rows; ++i)
+  _dims.rows = mat._dims.rows, _dims.cols = mat._dims.cols;
+  _matrix = new float[_dims.rows * _dims.cols];
+  for (int i = 0; i < _dims.rows; ++i)
   {
-    for (int j = 0; j < _cols; ++j)
+    for (int j = 0; j < _dims.cols; ++j)
     {
       (*this) (i, j) = mat (i, j);
     }
@@ -49,9 +49,9 @@ Matrix::~Matrix ()
 
 void Matrix::plain_print () const
 {
-  for (int i = 0; i < _rows; ++i)
+  for (int i = 0; i < _dims.rows; ++i)
   {
-    for (int j = 0; j < _cols; ++j)
+    for (int j = 0; j < _dims.cols; ++j)
     {
       std::cout << (*this) (i, j) << " ";
     }
@@ -62,9 +62,9 @@ void Matrix::plain_print () const
 float Matrix::norm () const
 {
   float sum = 0;
-  for (int i = 0; i < _rows; ++i)
+  for (int i = 0; i < _dims.rows; ++i)
   {
-    for (int j = 0; j < _cols; ++j)
+    for (int j = 0; j < _dims.cols; ++j)
     {
       sum += ((*this) (i, j) * (*this) (i, j));
     }
@@ -74,14 +74,14 @@ float Matrix::norm () const
 
 Matrix Matrix::dot (const Matrix &mat) const
 {
-  if (_rows != mat._rows || _cols != mat._cols)
+  if (_dims.rows != mat._dims.rows || _dims.cols != mat._dims.cols)
   {
     throw std::length_error (INVALID_DIM_ERR);
   }
   Matrix prod (*this);
-  for (int i = 0; i < _rows; ++i)
+  for (int i = 0; i < _dims.rows; ++i)
   {
-    for (int j = 0; j < _cols; ++j)
+    for (int j = 0; j < _dims.cols; ++j)
     {
       prod (i, j) *= mat (i, j);
     }
@@ -91,17 +91,17 @@ Matrix Matrix::dot (const Matrix &mat) const
 
 Matrix &Matrix::vectorize ()
 {
-  _rows *= _cols;
-  _cols = 1;
+  _dims.rows *= _dims.cols;
+  _dims.cols = 1;
   return *this;
 }
 
 float Matrix::sum () const
 {
   float sum = 0;
-  for (int i = 0; i < _rows; ++i)
+  for (int i = 0; i < _dims.rows; ++i)
   {
-    for (int j = 0; j < _cols; ++j)
+    for (int j = 0; j < _dims.cols; ++j)
     {
       sum += (*this) (i, j);
     }
@@ -111,20 +111,20 @@ float Matrix::sum () const
 
 Matrix &Matrix::transpose ()
 {
-  Matrix temp (_cols, _rows);
-  for (int i = 0; i < _rows; ++i)
+  Matrix temp (_dims.cols, _dims.rows);
+  for (int i = 0; i < _dims.rows; ++i)
   {
-    for (int j = 0; j < _cols; ++j)
+    for (int j = 0; j < _dims.cols; ++j)
     {
       temp (j, i) = (*this) (i, j);
     }
   }
   delete[] _matrix;
-  _rows = temp._rows, _cols = temp._cols;
-  _matrix = new float[_rows * _cols];
-  for (int i = 0; i < _rows; ++i)
+  _dims.rows = temp._dims.rows, _dims.cols = temp._dims.cols;
+  _matrix = new float[_dims.rows * _dims.cols];
+  for (int i = 0; i < _dims.rows; ++i)
   {
-    for (int j = 0; j < _cols; ++j)
+    for (int j = 0; j < _dims.cols; ++j)
     {
       (*this) (i, j) = temp (i, j);
     }
@@ -136,7 +136,7 @@ int Matrix::argmax () const
 {
   int max_idx = 0;
   float max_val = _matrix[max_idx];
-  for (int i = 0; i < _rows * _cols; ++i)
+  for (int i = 0; i < _dims.rows * _dims.cols; ++i)
   {
     if ((*this)[i] > max_val)
     {
@@ -149,14 +149,14 @@ int Matrix::argmax () const
 
 Matrix operator+ (const Matrix &lhs, const Matrix &rhs)
 {
-  if (lhs._rows != rhs._rows || lhs._cols != rhs._cols)
+  if (lhs._dims.rows != rhs._dims.rows || lhs._dims.cols != rhs._dims.cols)
   {
     throw std::length_error (INVALID_DIM_ERR);
   }
   Matrix sum (lhs);
-  for (int i = 0; i < lhs._rows; ++i)
+  for (int i = 0; i < lhs._dims.rows; ++i)
   {
-    for (int j = 0; j < lhs._cols; ++j)
+    for (int j = 0; j < lhs._dims.cols; ++j)
     {
       sum (i, j) += rhs (i, j);
     }
@@ -169,16 +169,17 @@ Matrix &Matrix::operator= (const Matrix &rhs)
   if (this != &rhs)
   {
     delete[] _matrix;
-    _rows = rhs._rows, _cols = rhs._cols;
-    _matrix = new float[_rows * _cols];
-    std::memcpy (_matrix, rhs._matrix, _rows * _cols * sizeof (float));
+    _dims.rows = rhs._dims.rows, _dims.cols = rhs._dims.cols;
+    _matrix = new float[_dims.rows * _dims.cols];
+    std::memcpy (_matrix, rhs._matrix, _dims.rows * _dims.cols * sizeof
+        (float));
   }
   return *this;
 }
 
 Matrix &Matrix::operator+= (const Matrix &rhs)
 {
-  if (_rows != rhs._rows || _cols != rhs._cols)
+  if (_dims.rows != rhs._dims.rows || _dims.cols != rhs._dims.cols)
   {
     throw std::length_error (INVALID_DIM_ERR);
   }
@@ -188,11 +189,11 @@ Matrix &Matrix::operator+= (const Matrix &rhs)
 
 Matrix operator* (const Matrix &lhs, const Matrix &rhs)
 {
-  if (lhs._cols != rhs._rows)
+  if (lhs._dims.cols != rhs._dims.rows)
   {
     throw std::length_error (INVALID_DIM_ERR);
   }
-  int rows = lhs._rows, cols = rhs._cols, n = lhs._cols;
+  int rows = lhs._dims.rows, cols = rhs._dims.cols, n = lhs._dims.cols;
   Matrix prod (rows, cols);
   for (int i = 0; i < rows; ++i)
   {
@@ -211,10 +212,10 @@ Matrix operator* (const Matrix &lhs, const Matrix &rhs)
 
 Matrix Matrix::operator* (float c) const
 {
-  Matrix mult (_rows, _cols);
-  for (int i = 0; i < _rows; ++i)
+  Matrix mult (_dims.rows, _dims.cols);
+  for (int i = 0; i < _dims.rows; ++i)
   {
-    for (int j = 0; j < _cols; ++j)
+    for (int j = 0; j < _dims.cols; ++j)
     {
       mult (i, j) = c * (*this) (i, j);
     }
@@ -229,25 +230,25 @@ Matrix operator* (const float c, Matrix &rhs)
 
 float &Matrix::operator() (int i, int j)
 {
-  if (i >= _rows || i < 0 || j >= _cols || j < 0)
+  if (i >= _dims.rows || i < 0 || j >= _dims.cols || j < 0)
   {
     throw std::length_error (RANGE_ERR);
   }
-  return _matrix[i * _cols + j];
+  return _matrix[i * _dims.cols + j];
 }
 
 float Matrix::operator() (int i, int j) const
 {
-  if (i >= _rows || i < 0 || j >= _cols || j < 0)
+  if (i >= _dims.rows || i < 0 || j >= _dims.cols || j < 0)
   {
     throw std::length_error (RANGE_ERR);
   }
-  return _matrix[i * _cols + j];
+  return _matrix[i * _dims.cols + j];
 }
 
 float &Matrix::operator[] (const int i)
 {
-  if (i >= _rows * _cols || i < 0)
+  if (i >= _dims.rows * _dims.cols || i < 0)
   {
     throw std::length_error (RANGE_ERR);
   }
@@ -256,7 +257,7 @@ float &Matrix::operator[] (const int i)
 
 float Matrix::operator[] (int i) const
 {
-  if (i >= _rows * _cols || i < 0)
+  if (i >= _dims.rows * _dims.cols || i < 0)
   {
     throw std::length_error (RANGE_ERR);
   }
@@ -269,9 +270,9 @@ std::ostream &operator<< (std::ostream &os, const Matrix &rhs)
   {
     throw std::runtime_error (STREAM_ERR);
   }
-  for (int i = 0; i < rhs._rows; ++i)
+  for (int i = 0; i < rhs._dims.rows; ++i)
   {
-    for (int j = 0; j < rhs._cols; ++j)
+    for (int j = 0; j < rhs._dims.cols; ++j)
     {
       os << (rhs (i, j) > MIN_VAL ? "**" : "  ");
     }
@@ -282,9 +283,9 @@ std::ostream &operator<< (std::ostream &os, const Matrix &rhs)
 
 std::istream &operator>> (std::istream &is, Matrix &rhs)
 {
-  for (int i = 0; i < rhs._rows; ++i)
+  for (int i = 0; i < rhs._dims.rows; ++i)
   {
-    for (int j = 0; j < rhs._cols; ++j)
+    for (int j = 0; j < rhs._dims.cols; ++j)
     {
       if (!is.read (reinterpret_cast<char *>(&rhs (i, j)), sizeof (float)))
       {

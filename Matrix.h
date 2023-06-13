@@ -52,14 +52,14 @@ class Matrix
    * @return The number of rows.
    */
   int get_rows () const
-  { return _rows; }
+  { return _dims.rows; }
 
   /**
    * Returns the number of columns in the matrix.
    * @return The number of columns.
    */
   int get_cols () const
-  { return _cols; }
+  { return _dims.cols; }
 
   /**
    * Returns the Frobenius norm of the current Matrix object.
@@ -206,7 +206,7 @@ class Matrix
   friend std::istream &operator>> (std::istream &is, Matrix &rhs);
 
  private:
-  int _rows, _cols;
+  matrix_dims _dims;
   float *_matrix;
 };
 #endif //MATRIX_H
