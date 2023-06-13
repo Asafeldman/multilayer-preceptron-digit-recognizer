@@ -74,6 +74,10 @@ float Matrix::norm () const
 
 Matrix Matrix::dot (const Matrix &mat) const
 {
+  if (_rows != mat._rows || _cols != mat._cols)
+  {
+    throw std::length_error (INVALID_DIM_ERR);
+  }
   Matrix prod (*this);
   for (int i = 0; i < _rows; ++i)
   {
@@ -107,22 +111,22 @@ float Matrix::sum () const
 
 Matrix &Matrix::transpose ()
 {
-  Matrix transposed (_cols, _rows);
+  Matrix temp (_cols, _rows);
   for (int i = 0; i < _rows; ++i)
   {
     for (int j = 0; j < _cols; ++j)
     {
-      transposed (j, i) = (*this) (i, j);
+      temp (j, i) = (*this) (i, j);
     }
   }
   delete[] _matrix;
-  _rows = transposed._rows, _cols = transposed._cols;
+  _rows = temp._rows, _cols = temp._cols;
   _matrix = new float[_rows * _cols];
   for (int i = 0; i < _rows; ++i)
   {
     for (int j = 0; j < _cols; ++j)
     {
-      (*this) (i, j) = transposed (i, j);
+      (*this) (i, j) = temp (i, j);
     }
   }
   return *this;
@@ -174,6 +178,10 @@ Matrix &Matrix::operator= (const Matrix &rhs)
 
 Matrix &Matrix::operator+= (const Matrix &rhs)
 {
+  if (_rows != rhs._rows || _cols != rhs._cols)
+  {
+    throw std::length_error (INVALID_DIM_ERR);
+  }
   (*this) = (*this) + rhs;
   return *this;
 }
@@ -221,7 +229,7 @@ Matrix operator* (const float c, Matrix &rhs)
 
 float &Matrix::operator() (int i, int j)
 {
-  if (i >= _rows || j >= _cols)
+  if (i >= _rows || i <= 0 || j >= _cols || j <= 0)
   {
     throw std::length_error (RANGE_ERR);
   }
@@ -230,7 +238,7 @@ float &Matrix::operator() (int i, int j)
 
 float Matrix::operator() (int i, int j) const
 {
-  if (i >= _rows || j >= _cols)
+  if (i >= _rows || i <= 0 || j >= _cols || j <= 0)
   {
     throw std::length_error (RANGE_ERR);
   }
@@ -239,7 +247,7 @@ float Matrix::operator() (int i, int j) const
 
 float &Matrix::operator[] (const int i)
 {
-  if (i >= _rows * _cols)
+  if (i >= _rows * _cols || i <= 0)
   {
     throw std::length_error (RANGE_ERR);
   }
@@ -248,7 +256,7 @@ float &Matrix::operator[] (const int i)
 
 float Matrix::operator[] (int i) const
 {
-  if (i >= _rows * _cols)
+  if (i >= _rows * _cols || i <= 0)
   {
     throw std::length_error (RANGE_ERR);
   }
