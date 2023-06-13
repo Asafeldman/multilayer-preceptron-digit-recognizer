@@ -197,7 +197,8 @@ class Matrix
   friend std::ostream &operator<< (std::ostream &os, const Matrix &rhs);
 
   /**
-   * Overloaded input stream operator for reading matrix elements from an input stream.
+   * Overloaded input stream operator for reading matrix elements from an
+   * input stream.
    * @param is The input stream.
    * @param rhs The matrix to be filled with input values.
    * @return Reference to the input stream.
